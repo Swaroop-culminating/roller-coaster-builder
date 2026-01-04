@@ -182,20 +182,28 @@ export const useRollerCoaster = create<RollerCoasterState>((set, get) => ({
         });
       }
       
-      // Simple straight exit: just add forward-facing points at entry height
-      // No complex math - just like manually placed straight track
+      // Straight exit that tapers lateral offset back to centerline
       const loopExitPos = loopPoints[loopPoints.length - 1].position.clone();
       const straightSpacing = 4;
-      const numStraightPoints = 3;
+      const numStraightPoints = 4;
+      
+      // Calculate centerline position (where track would be without lateral offset)
+      const centerlineExitPos = entryPos.clone();
       
       const straightExitPoints: TrackPoint[] = [];
       for (let i = 1; i <= numStraightPoints; i++) {
+        const t = i / numStraightPoints; // 0 to 1
+        const lateralFade = 1 - t; // Fades from 1 to 0
+        
+        // Start from loop exit lateral position, fade back to centerline
+        const lateralOffset = helixSeparation * lateralFade;
+        
         straightExitPoints.push({
           id: `point-${++pointCounter}`,
           position: new THREE.Vector3(
-            loopExitPos.x + forward.x * straightSpacing * i,
-            entryPos.y, // Back to entry height
-            loopExitPos.z + forward.z * straightSpacing * i
+            centerlineExitPos.x + forward.x * straightSpacing * i + right.x * lateralOffset,
+            entryPos.y,
+            centerlineExitPos.z + forward.z * straightSpacing * i + right.z * lateralOffset
           ),
           tilt: 0
         });
