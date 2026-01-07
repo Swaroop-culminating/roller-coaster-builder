@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo } from "react";
 import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRollerCoaster } from "@/lib/stores/useRollerCoaster";
-import { getTrackCurve, getTrackTiltAtProgress } from "./Track";
+import { getTrackCurve } from "./Track";
 
 export function RideCamera() {
   const { camera } = useThree();
@@ -147,11 +147,6 @@ export function RideCamera() {
     const cameraOffset = baseUpVector.clone().multiplyScalar(cameraHeight);
     const targetCameraPos = position.clone().add(cameraOffset);
     
-    // Apply track tilt only for camera ORIENTATION (not position)
-    const tilt = getTrackTiltAtProgress(trackPoints, newProgress, isLooped);
-    const tiltRad = (tilt * Math.PI) / 180;
-    const orientationUp = baseUpVector.clone().applyAxisAngle(tangent, tiltRad);
-    
     // Look directly down the track - use tangent direction for look target
     const lookDistance = 10;
     const targetLookAt = position.clone().add(tangent.clone().multiplyScalar(lookDistance));
@@ -162,8 +157,8 @@ export function RideCamera() {
     
     camera.position.copy(previousCameraPos.current);
     
-    // Set camera's up vector for orientation (includes tilt for proper roll feel)
-    camera.up.copy(orientationUp);
+    // Use untilted up vector - camera faces forward without leaning
+    camera.up.copy(baseUpVector);
     camera.lookAt(previousLookAt.current);
   });
   
