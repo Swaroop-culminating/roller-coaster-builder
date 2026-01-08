@@ -74,6 +74,9 @@ export function TrackPoint({ id, position, tilt, index, isFirst, isLast }: Track
   
   if (mode === "ride") return null;
   
+  // Scale factor to match the track size
+  const POINT_SCALE = 0.6;
+  
   return (
     <group>
       <mesh
@@ -81,7 +84,7 @@ export function TrackPoint({ id, position, tilt, index, isFirst, isLast }: Track
         position={[position.x, position.y, position.z]}
         onClick={handleClick}
       >
-        <sphereGeometry args={[0.5, 16, 16]} />
+        <sphereGeometry args={[0.5 * POINT_SCALE, 16, 16]} />
         <meshStandardMaterial
           color={isSelected ? "#ff6600" : isFirst ? "#22cc44" : isLast ? "#ee3333" : "#4488ff"}
           emissive={isSelected ? "#ff3300" : isFirst ? "#115522" : isLast ? "#661111" : "#000000"}
@@ -101,7 +104,7 @@ export function TrackPoint({ id, position, tilt, index, isFirst, isLast }: Track
             showZ={true}
           />
           
-          <Html position={[position.x, position.y + 2, position.z]} center>
+          <Html position={[position.x, position.y + 1.5, position.z]} center>
             <div 
               className="bg-black/80 text-white p-2 rounded text-xs whitespace-nowrap"
               style={{ pointerEvents: 'auto' }}

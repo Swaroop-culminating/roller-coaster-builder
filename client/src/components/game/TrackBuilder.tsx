@@ -91,11 +91,11 @@ export function TrackBuilder() {
       {isDraggingNew && dragPosition && (
         <group>
           <mesh position={[dragPosition.x, dragPosition.y, dragPosition.z]}>
-            <sphereGeometry args={[0.5, 16, 16]} />
+            <sphereGeometry args={[0.3, 16, 16]} />
             <meshStandardMaterial color="#00ff00" transparent opacity={0.7} />
           </mesh>
           <mesh position={[dragPosition.x, dragPosition.y / 2, dragPosition.z]}>
-            <cylinderGeometry args={[0.05, 0.05, dragPosition.y, 8]} />
+            <cylinderGeometry args={[0.03, 0.03, dragPosition.y, 8]} />
             <meshStandardMaterial color="#00ff00" transparent opacity={0.5} />
           </mesh>
         </group>
