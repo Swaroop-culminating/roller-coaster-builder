@@ -305,38 +305,11 @@ export function RideCamera() {
     
     const { point: position, tangent, up: sampleUp, inRoll } = sample;
     
-    if (inRoll) {
-      transportedUp.current.copy(sampleUp);
-    } else {
-      const prevSample = sampleHybridTrack(lastProgress.current, sections, curve, loopSegments, trackPoints, isLooped);
-      if (prevSample && !prevSample.inRoll) {
-        const prevTangent = prevSample.tangent;
-        
-        const rotationAxis = new THREE.Vector3().crossVectors(prevTangent, tangent);
-        const rotationAngle = Math.acos(Math.min(1, Math.max(-1, prevTangent.dot(tangent))));
-        
-        if (rotationAxis.lengthSq() > 0.0001 && rotationAngle > 0.0001) {
-          rotationAxis.normalize();
-          transportedUp.current.applyAxisAngle(rotationAxis, rotationAngle);
-        }
-        
-        const dot = transportedUp.current.dot(tangent);
-        transportedUp.current.sub(tangent.clone().multiplyScalar(dot));
-        if (transportedUp.current.lengthSq() > 0.0001) {
-          transportedUp.current.normalize();
-        } else {
-          transportedUp.current.set(0, 1, 0);
-          const d2 = transportedUp.current.dot(tangent);
-          transportedUp.current.sub(tangent.clone().multiplyScalar(d2)).normalize();
-        }
-      } else {
-        transportedUp.current.copy(sampleUp);
-      }
-    }
-    
+    // Use the sample's up vector directly - it's already computed using world-up anchored frame
+    // This keeps the camera aligned with the track geometry
     lastProgress.current = newProgress;
     
-    const baseUpVector = transportedUp.current.clone();
+    const baseUpVector = sampleUp.clone();
     
     // Higher camera position to enhance the feeling of sitting on top of the coaster
     const cameraHeight = 2.5;
